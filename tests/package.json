@@ -1,0 +1,7 @@
+{
+  "name": "it-desk-tests",
+  "private": true,
+  "description": "Offline tests for the IT Desk Apps Script app. Not deployed to Google.",
+  "scripts": { "test": "node run-tests.js", "e2e": "node e2e.js" },
+  "devDependencies": { "playwright": "^1.40.0" }
+}
