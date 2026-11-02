@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <style>
+    :root{--navy:#10243a;--navy2:#183650;--gold:#c9a45c;--bg:#f3f6fa;--ink:#172536;--muted:#718096;--line:#e4eaf1;--white:#fff;--green:#16845b;--red:#c34c4c}
+    *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
+    button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:8px;padding:11px 15px;font-weight:700}button:disabled{opacity:.55;cursor:wait}
+    .primary{background:var(--navy);color:#fff}.gold{background:var(--gold);color:#182638}.light{background:#edf2f7;color:var(--navy)}.danger{background:#fff0f0;color:#a33}.small{padding:7px 11px;font-size:12px}
+    .hidden{display:none!important}.auth-wrap{min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(135deg,#10243a,#244b68)}
+    .auth-card{width:min(440px,100%);background:#fff;padding:34px;border-radius:18px;box-shadow:0 18px 60px #0003}
+    .brand{font-size:13px;letter-spacing:2px;color:var(--gold);font-weight:800}.auth-card h1{margin:10px 0 6px;color:var(--navy)}.muted{color:var(--muted);font-size:13px;line-height:1.5}
+    label{display:block;font-size:12px;font-weight:700;margin:13px 0 6px;color:#435368}input,select,textarea{width:100%;padding:11px 12px;border:1px solid #dce4ec;border-radius:8px;background:#fff;color:var(--ink);outline:none}textarea{min-height:95px;resize:vertical}input:disabled{background:#f1f4f8}
+    input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px #c9a45c22}.auth-card button{width:100%;margin-top:18px}.switch{text-align:center;margin-top:17px;font-size:13px}.switch a{color:#1b5b83;cursor:pointer;font-weight:700}
+    .app{min-height:100vh}.sidebar{position:fixed;inset:0 auto 0 0;width:245px;background:var(--navy);color:#fff;padding:25px 17px;display:flex;flex-direction:column}
+    .side-brand{font-weight:800;font-size:17px;line-height:1.4;padding:0 10px 28px}.side-brand span{display:block;color:var(--gold);font-size:10px;letter-spacing:2px;margin-top:5px}
+    .nav button{display:block;width:100%;text-align:left;background:transparent;color:#c6d2df;padding:13px 12px;margin:3px 0;font-weight:600}.nav button.active,.nav button:hover{background:#ffffff16;color:#fff}
+    .side-bottom{margin-top:auto;border-top:1px solid #ffffff22;padding:17px 10px}.side-bottom small{display:block;color:#9fb0c1;margin-bottom:12px;word-break:break-all}
+    .main{margin-left:245px;padding:28px 32px;max-width:1600px}.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;gap:15px}.topbar h1{margin:0;font-size:25px;color:var(--navy)}.user-chip{background:#fff;border:1px solid var(--line);padding:10px 13px;border-radius:10px;font-size:12px}
+    .cards{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:15px;margin-bottom:24px}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:13px;padding:19px}.card small{color:var(--muted);font-weight:700}.card strong{display:block;font-size:28px;margin-top:9px;color:var(--navy)}
+    .panel{margin-bottom:20px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px;flex-wrap:wrap}.panel h2{font-size:16px;margin:0;color:var(--navy)}.toolbar{display:flex;gap:9px;flex-wrap:wrap}.toolbar input,.toolbar select{width:auto;min-width:150px}
+    table{width:100%;border-collapse:collapse;min-width:700px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);font-size:12px;vertical-align:top}th{color:#6c7c8f;background:#f8fafc;font-size:11px;text-transform:uppercase;letter-spacing:.5px}td strong{color:var(--navy)}
+    .table-wrap{overflow:auto}.badge{display:inline-block;border-radius:20px;padding:5px 9px;font-size:10px;font-weight:800;background:#edf2f7;color:#506174;white-space:nowrap}
+    .badge.New,.badge.Acknowledged{background:#fff3d8;color:#986800}.badge.Resolved,.badge.Closed,.badge.Good{background:#e3f6ed;color:#14724d}.badge.Urgent,.badge.High,.badge.Faulty{background:#ffebeb;color:#a83d3d}.badge.InProgress{background:#e8f1ff;color:#285b9b}.badge.WaitingforEmployee,.badge.Fair{background:#f3e8ff;color:#6b3fa0}.badge.Retired{background:#e9ecef;color:#6c757d}
+    .empty{padding:35px;text-align:center;color:var(--muted);font-size:13px;line-height:1.6}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 15px}.full{grid-column:1/-1}.form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:15px}.notice{padding:11px 13px;border-radius:8px;background:#fff5dc;color:#765600;font-size:12px;margin-bottom:15px}.success{background:#e5f7ee;color:#176b4c}.error{background:#fff0f0;color:#a33}
+    .modal-backdrop{position:fixed;inset:0;background:#0d1d2dcc;display:grid;place-items:center;padding:20px;z-index:5}.modal{width:min(650px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:15px;padding:23px}.modal-head{display:flex;justify-content:space-between;align-items:center}.modal-head h2{margin:0;color:var(--navy)}.close{background:#edf2f7;padding:7px 11px}
+    .detail-line{padding:11px 0;border-bottom:1px solid var(--line);font-size:13px;white-space:pre-wrap;word-break:break-word}.detail-line b{display:block;color:#718096;font-size:10px;text-transform:uppercase;margin-bottom:5px}.resolution{background:#e5f7ee;border-radius:8px;padding:12px;margin-top:10px}
+    .equip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:15px}.equip{background:#fff;border:1px solid var(--line);border-radius:13px;padding:19px;display:flex;flex-direction:column;gap:7px}
+    .equip .tag{font-size:11px;letter-spacing:1px;color:var(--gold);font-weight:800}.equip h3{margin:0;font-size:16px;color:var(--navy)}.equip dl{margin:6px 0 0;font-size:12px;display:grid;grid-template-columns:auto 1fr;gap:5px 12px}.equip dt{color:var(--muted)}.equip dd{margin:0;word-break:break-word}.equip .actions{margin-top:auto;padding-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+    @media(max-width:850px){.sidebar{position:static;width:auto;height:auto;padding:14px;display:block}.side-brand{padding:0 8px 10px}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap;width:auto}.side-bottom{display:none}.main{margin:0;padding:20px 14px}.cards{grid-template-columns:repeat(2,1fr)}.topbar{align-items:flex-start;flex-direction:column}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}}
+  </style>
+</head>
+<body>
+<div id="auth" class="auth-wrap">
+  <div class="auth-card">
+    <div class="brand">IT DESK</div><h1 id="authTitle">Welcome back</h1><p class="muted" id="authSub">Sign in to report and track IT support requests.</p>
+    <div id="authError" class="notice error hidden" role="alert"></div>
+    <div id="loginForm">
+      <label for="loginEmail">Email address</label><input id="loginEmail" type="email" autocomplete="username" placeholder="you@example.com">
+      <label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password">
+      <button id="loginBtn" class="primary" onclick="doLogin()">Sign in</button>
+      <div class="switch">New here? <a onclick="showRegister()">Create an employee account</a></div>
+    </div>
+    <div id="registerForm" class="hidden">
+      <label for="regName">Full name</label><input id="regName" placeholder="Your full name">
+      <label for="regEmail">Email address</label><input id="regEmail" type="email" placeholder="you@example.com">
+      <label for="regDept">Department</label><select id="regDept"></select>
+      <label for="regPassword">Password (at least 10 characters)</label><input id="regPassword" type="password" autocomplete="new-password">
+      <button id="regBtn" class="primary" onclick="doRegister()">Create account</button>
+      <div class="switch">Already registered? <a onclick="showLogin()">Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<div id="application" class="app hidden">
+  <aside class="sidebar">
+    <div class="side-brand">IT DESK <span>HELPDESK &amp; ASSET MANAGEMENT</span></div>
+    <nav class="nav" id="nav"></nav>
+    <div class="side-bottom"><small id="sideUser"></small><button class="light" onclick="signOut()">Sign out</button></div>
+  </aside>
+  <main class="main">
+    <div class="topbar"><div><div class="brand">IT OPERATIONS</div><h1 id="pageTitle">Overview</h1></div><div style="display:flex;gap:10px;align-items:center"><button class="light small" data-act="refresh" title="Reload the latest data">↻ Refresh</button><div class="user-chip" id="userChip"></div></div></div>
+    <div id="content"></div>
+  </main>
+</div>
+<div id="modalRoot"></div>
+
+<script>
+/* ---------- state & helpers ---------- */
+const store = {
+  get(k){ try { return sessionStorage.getItem(k) || ''; } catch (e) { return ''; } },
+  set(k,v){ try { sessionStorage.setItem(k,v); } catch (e) {} },
+  del(k){ try { sessionStorage.removeItem(k); } catch (e) {} }
+};
+let token = store.get('itdesk_token');
+let currentUser = null, initial = null, activePage = 'overview', prefill = null, ticketFilter = '';
+const STATUSES = ['New','Acknowledged','In Progress','Waiting for Employee','Resolved','Closed'];
+const CONDITIONS = ['New','Good','Fair','Faulty','Retired'];
+const $ = id => document.getElementById(id);
+const isAdmin = () => currentUser && currentUser.role === 'admin';
+const cls = v => String(v == null ? '' : v).replace(/[^A-Za-z0-9]/g, '');   // "In Progress" -> "InProgress" (safe CSS class)
+function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function call(name, ...args){
+  return new Promise((resolve, reject) => {
+    google.script.run
+      .withSuccessHandler(r => resolve(r))
+      .withFailureHandler(e => reject(new Error((e && e.message) || String(e))))[name](...args);
+  }).catch(e => {
+    if (/session has expired|account is not active/i.test(e.message) && currentUser) { sessionEnded(e.message); }
+    throw e;
+  });
+}
+function sessionEnded(msg){
+  store.del('itdesk_token'); token = ''; currentUser = null; closeModal();
+  $('application').classList.add('hidden'); $('auth').classList.remove('hidden'); showLogin(); showAuthError(msg);
+}
+/** Disables a button while its action runs so a double click cannot submit twice. */
+async function busy(btn, fn){
+  if (btn) btn.disabled = true;
+  try { return await fn(); } finally { if (btn) btn.disabled = false; }
+}
+
+/* ---------- sign in / register ---------- */
+function showAuthError(msg){ $('authError').textContent = msg; $('authError').classList.remove('hidden'); }
+function hideAuthError(){ $('authError').classList.add('hidden'); }
+function showLogin(){ $('loginForm').classList.remove('hidden'); $('registerForm').classList.add('hidden'); $('authTitle').textContent = 'Welcome back'; $('authSub').textContent = 'Sign in to report and track IT support requests.'; hideAuthError(); }
+function showRegister(){ $('loginForm').classList.add('hidden'); $('registerForm').classList.remove('hidden'); $('authTitle').textContent = 'Create an account'; $('authSub').textContent = 'Register as an employee to submit IT complaints.'; hideAuthError(); loadDepartments(); }
+async function loadDepartments(){
+  try { const d = await call('getPublicDepartments'); $('regDept').innerHTML = d.map(x => `<option>${esc(x)}</option>`).join(''); }
+  catch (e) { $('regDept').innerHTML = '<option>Other</option>'; showAuthError('Could not load departments: ' + e.message); }
+}
+function doLogin(){
+  hideAuthError();
+  return busy($('loginBtn'), async () => {
+    try {
+      const r = await call('login', {email: $('loginEmail').value, password: $('loginPassword').value});
+      token = r.token; store.set('itdesk_token', token); $('loginPassword').value = ''; await enterApp();
+    } catch (e) { showAuthError(e.message); }
+  });
+}
+function doRegister(){
+  hideAuthError();
+  return busy($('regBtn'), async () => {
+    try {
+      const r = await call('registerUser', {fullName: $('regName').value, email: $('regEmail').value, department: $('regDept').value, password: $('regPassword').value});
+      token = r.token; store.set('itdesk_token', token); $('regPassword').value = ''; await enterApp();
+    } catch (e) { showAuthError(e.message); }
+  });
+}
+async function enterApp(){
+  try {
+    initial = await call('getInitialData', token);
+    currentUser = initial.user;
+    $('auth').classList.add('hidden'); $('application').classList.remove('hidden');
+    $('userChip').textContent = currentUser.fullName + ' · ' + (isAdmin() ? 'IT SUPPORT' : 'EMPLOYEE');
+    $('sideUser').textContent = currentUser.email;
+    renderPage('overview');
+  } catch (e) {
+    store.del('itdesk_token'); token = ''; currentUser = null;
+    $('application').classList.add('hidden'); $('auth').classList.remove('hidden'); showAuthError(e.message);
+  }
+}
+async function signOut(){ try { await call('logout', token); } catch (e) {} store.del('itdesk_token'); token = ''; location.reload(); }
+async function refreshData(){ initial = await call('getInitialData', token); currentUser = initial.user; }
+
+/* ---------- navigation ---------- */
+function navItems(){
+  return isAdmin()
+    ? [['overview','Overview'],['tickets','All Tickets'],['assets','Asset Register'],['new','Report an Issue']]
+    : [['overview','Overview'],['tickets','My Complaints'],['equipment','My Equipment'],['new','Report an Issue']];
+}
+function buildNav(){ $('nav').innerHTML = navItems().map(([id,label]) => `<button class="${id===activePage?'active':''}" data-act="nav" data-id="${id}">${label}</button>`).join(''); }
+/** Reloads fresh data from the sheet, then shows the page (so IT Support always sees new complaints). */
+async function navigate(page){
+  if (page !== 'new') { try { await refreshData(); } catch (e) { if (!currentUser) return; } }
+  renderPage(page);
+}
+function renderPage(page){
+  closeModal(); activePage = page; buildNav();
+  const titles = {overview:'Overview', tickets:isAdmin()?'Ticket Management':'My Complaints', assets:'Asset Register', equipment:'My Equipment', new:'Report an IT Issue'};
+  $('pageTitle').textContent = titles[page] || 'Overview';
+  if (page === 'overview') renderOverview();
+  else if (page === 'tickets') renderTickets();
+  else if (page === 'assets' && isAdmin()) renderAssets();
+  else if (page === 'equipment' && !isAdmin()) renderEquipment();
+  else if (page === 'new') renderNewTicket();
+  else renderOverview();
+}
+
+/* ---------- overview ---------- */
+function statsCards(s){
+  const c = (l,v) => `<div class="card"><small>${l}</small><strong>${esc(v)}</strong></div>`;
+  return `<div class="cards">${c('Total complaints',s.total)}${c('New',s.newCount)}${c('In progress',s.inProgress)}${c('Resolved',s.resolved)}</div>`;
+}
+const byNewest = (a,b) => b.createdAtTs - a.createdAtTs;
+function renderOverview(){
+  const rows = initial.tickets.slice().sort(byNewest).slice(0, 6);
+  const side = isAdmin()
+    ? `<section class="panel"><div class="panel-head"><h2>IT support workspace</h2></div><p class="muted">Review incoming complaints, assign technicians, update ticket status and maintain the company asset register.</p></section>`
+    : `<section class="panel"><h2>Need technical assistance?</h2><p class="muted">Submit a complaint and IT Support will review it. You can track updates from My Complaints. You currently have ${initial.assets.length} item(s) of equipment on record.</p><button class="primary" data-act="nav" data-id="new">Report an issue</button> <button class="light" data-act="nav" data-id="equipment">My equipment</button></section>`;
+  $('content').innerHTML = statsCards(initial.stats) +
+    `<section class="panel"><div class="panel-head"><h2>Recent complaints</h2><button class="light" data-act="nav" data-id="tickets">View all</button></div>${ticketTable(rows)}</section>` + side;
+}
+
+/* ---------- tickets ---------- */
+function ticketTable(rows){
+  if (!rows.length) return '<div class="empty">No complaints to show.</div>';
+  return `<div class="table-wrap"><table><thead><tr><th>Ticket</th><th>Issue</th><th>Employee</th><th>Priority</th><th>Status</th><th>Reported</th><th></th></tr></thead><tbody>${rows.map(t => `<tr>
+    <td><strong>${esc(t.ticketId)}</strong></td>
+    <td>${esc(t.title)}<br><span class="muted">${esc(t.category)}${t.assetTag?' · '+esc(t.assetTag):''}</span></td>
+    <td>${esc(t.employeeName)}<br><span class="muted">${esc(t.department)}</span></td>
+    <td><span class="badge ${cls(t.priority)}">${esc(t.priority)}</span></td>
+    <td><span class="badge ${cls(t.status)}">${esc(t.status)}</span></td>
+    <td>${esc(t.createdAt)}</td>
+    <td><button class="light small" data-act="openTicket" data-id="${esc(t.ticketId)}">Open</button></td></tr>`).join('')}</tbody></table></div>`;
+}
+function renderTickets(){
+  $('content').innerHTML = `<section class="panel"><div class="panel-head"><h2>${isAdmin()?'All submitted complaints':'Your submitted complaints'}</h2><div class="toolbar"><input id="ticketSearch" placeholder="Search tickets..." value="${esc(ticketFilter)}" oninput="filterTickets()"><select id="statusFilter" onchange="filterTickets()"><option value="">All statuses</option>${STATUSES.map(x=>`<option>${x}</option>`).join('')}</select></div></div><div id="ticketTable"></div></section>`;
+  filterTickets();
+}
+function filterTickets(){
+  ticketFilter = $('ticketSearch').value;
+  const q = ticketFilter.toLowerCase(), s = $('statusFilter').value;
+  const rows = initial.tickets.filter(t => (!s || t.status === s) && [t.ticketId,t.title,t.employeeName,t.department,t.category,t.assetTag,t.assignedTo].join(' ').toLowerCase().includes(q)).sort(byNewest);
+  $('ticketTable').innerHTML = ticketTable(rows);
+}
+function renderNewTicket(){
+  const pre = prefill || {}; prefill = null;
+  const mine = isAdmin() ? [] : initial.assets;
+  const assetField = isAdmin()
+    ? `<input id="fAssetText" placeholder="e.g. LAP-001 (optional)" value="${esc(pre.asset||'')}">`
+    : `<select id="fAssetSel" onchange="toggleOtherAsset()"><option value="">Not about a specific item of equipment</option>${mine.map(a=>`<option value="${esc(a.assetTag)}" ${a.assetTag===pre.asset?'selected':''}>${esc(a.assetTag)} — ${esc(a.assetType)} ${esc(a.brandModel)}</option>`).join('')}<option value="__other">Other equipment (enter its tag)…</option></select><input id="fAssetText" class="hidden" style="margin-top:8px" placeholder="Asset tag printed on the equipment">`;
+  const cats = initial.categories || ['Hardware','Software','Other'];
+  $('content').innerHTML = `<section class="panel"><h2>Submit a complaint</h2><p class="muted">Describe the problem clearly so IT Support can investigate.</p><div id="formNotice"></div><div class="form-grid"><div><label for="fCategory">Issue category</label><select id="fCategory">${cats.map(c=>`<option ${c===pre.category?'selected':''}>${esc(c)}</option>`).join('')}</select></div><div><label for="fPriority">Priority</label><select id="fPriority"><option>Low</option><option selected>Medium</option><option>High</option><option>Urgent</option></select></div><div class="full"><label for="fTitle">Issue title</label><input id="fTitle" placeholder="e.g. Laptop will not power on" value="${esc(pre.title||'')}"></div><div class="full"><label for="${isAdmin()?'fAssetText':'fAssetSel'}">Related equipment</label>${assetField}</div><div class="full"><label for="fDescription">Describe the issue</label><textarea id="fDescription" placeholder="What happened? When did it start? What have you tried?"></textarea></div></div><div class="form-actions"><button id="submitTicketBtn" class="primary" data-act="submitTicket">Submit complaint</button></div></section>`;
+}
+function toggleOtherAsset(){ $('fAssetText').classList.toggle('hidden', $('fAssetSel').value !== '__other'); }
+function readAssetField(){
+  if (isAdmin()) return $('fAssetText').value;
+  const v = $('fAssetSel').value;
+  return v === '__other' ? $('fAssetText').value : v;
+}
+function submitTicket(btn){
+  return busy(btn, async () => {
+    const payload = {category:$('fCategory').value, priority:$('fPriority').value, title:$('fTitle').value, assetTag:readAssetField(), description:$('fDescription').value};
+    try {
+      const r = await call('createTicket', token, payload);
+      await refreshData();
+      $('content').innerHTML = `<section class="panel"><div class="notice success">Your complaint has been submitted successfully.</div><h2>Ticket reference: ${esc(r.ticketId)}</h2><p class="muted">IT Support can now review your complaint. You can track its progress under ${isAdmin()?'All Tickets':'My Complaints'}.</p><button class="primary" data-act="nav" data-id="tickets">View ${isAdmin()?'tickets':'my complaints'}</button></section>`;
+    } catch (e) { $('formNotice').innerHTML = `<div class="notice error">${esc(e.message)}</div>`; }
+  });
+}
+async function openTicket(id){
+  try {
+    const t = initial.tickets.find(x => x.ticketId === id); if (!t) return;
+    const updates = await call('getTicketUpdates', token, id);
+    const techs = (initial.technicians || []).slice(); if (t.assignedTo && !techs.some(x => x.email === t.assignedTo)) techs.push({name:'Former technician', email:t.assignedTo});
+    const techOptions = ['<option value="">Unassigned</option>'].concat(techs.map(x => `<option value="${esc(x.email)}" ${x.email===t.assignedTo?'selected':''}>${esc(x.name)} (${esc(x.email)})</option>`)).join('');
+    const adminForm = `<div class="form-grid"><div><label for="mStatus">Status</label><select id="mStatus">${STATUSES.map(x=>`<option ${x===t.status?'selected':''}>${x}</option>`).join('')}</select></div><div><label for="mAssigned">Assigned technician</label><select id="mAssigned">${techOptions}</select></div><div class="full"><label for="mResolution">Resolution notes (required to resolve or close)</label><textarea id="mResolution">${esc(t.resolution)}</textarea></div><div class="full"><label for="mMessage">Update message (shown in the history)</label><textarea id="mMessage" placeholder="Add an update visible in the ticket history"></textarea></div></div><div id="modalNotice"></div><div class="form-actions"><button class="primary" data-act="saveTicketUpdate" data-id="${esc(t.ticketId)}">Save changes</button></div>`;
+    const empForm = t.status === 'Closed'
+      ? '<p class="muted">This ticket is closed. Submit a new complaint if the problem returns.</p>'
+      : `<div class="form-grid"><div class="full"><label for="mMessage">Send a message to IT Support</label><textarea id="mMessage" placeholder="Add information about your complaint"></textarea></div></div><div id="modalNotice"></div><div class="form-actions"><button class="primary" data-act="sendEmployeeUpdate" data-id="${esc(t.ticketId)}">Send message</button></div>`;
+    const resolutionBlock = t.resolution ? `<div class="resolution"><b style="font-size:10px;color:#176b4c;text-transform:uppercase">Resolution${t.resolvedAt?' · '+esc(t.resolvedAt):''}</b><div style="white-space:pre-wrap;margin-top:5px;font-size:13px">${esc(t.resolution)}</div></div>` : '';
+    showModal(`<div class="modal-head"><h2>${esc(t.ticketId)}</h2><button class="close" data-act="closeModal" aria-label="Close">✕</button></div>
+      <div class="detail-line"><b>Issue</b>${esc(t.title)} · ${esc(t.category)}</div>
+      <div class="detail-line"><b>Reported by</b>${esc(t.employeeName)} (${esc(t.employeeEmail)}) · ${esc(t.department)} · ${esc(t.createdAt)}</div>
+      <div class="detail-line"><b>Description</b>${esc(t.description)}</div>
+      <div class="detail-line"><b>Priority / Status</b>${esc(t.priority)} · ${esc(t.status)}</div>
+      <div class="detail-line"><b>Related equipment</b>${esc(t.assetTag || 'Not specified')}</div>
+      <div class="detail-line"><b>Assigned technician</b>${esc(t.assignedTo || 'Not yet assigned')}</div>
+      ${resolutionBlock}
+      ${isAdmin() ? adminForm : empForm}
+      <h3 style="font-size:14px;margin-top:25px">Activity history</h3>
+      ${updates.map(u => `<div class="detail-line"><b>${esc(u.authorName)} (${esc(u.authorRole)}) · ${esc(u.createdAt)} · ${esc(u.status)}</b>${esc(u.message)}</div>`).join('') || '<p class="muted">No updates yet.</p>'}`);
+  } catch (e) { alert(e.message); }
+}
+function saveTicketUpdate(btn, id){
+  return busy(btn, async () => {
+    try {
+      await call('updateTicket', token, {ticketId:id, status:$('mStatus').value, assignedTo:$('mAssigned').value, resolution:$('mResolution').value, message:$('mMessage').value});
+      await refreshData(); renderPage(activePage); openTicket(id);
+    } catch (e) { $('modalNotice').innerHTML = `<div class="notice error">${esc(e.message)}</div>`; }
+  });
+}
+function sendEmployeeUpdate(btn, id){
+  return busy(btn, async () => {
+    try {
+      await call('addEmployeeUpdate', token, {ticketId:id, message:$('mMessage').value});
+      await refreshData(); openTicket(id);
+    } catch (e) { $('modalNotice').innerHTML = `<div class="notice error">${esc(e.message)}</div>`; }
+  });
+}
+
+/* ---------- My Equipment (employee) ---------- */
+function renderEquipment(){
+  const items = initial.assets;
+  if (!items.length) {
+    $('content').innerHTML = `<section class="panel"><div class="empty"><strong>No equipment is assigned to you yet.</strong><br>IT Support records equipment against your sign-in email (${esc(currentUser.email)}).<br>If you have been issued a laptop, phone or other item, ask IT Support to add it to your record.</div></section>`;
+    return;
+  }
+  $('content').innerHTML = `<p class="muted" style="margin-top:0">Equipment IT Support has recorded as assigned to you. If something is wrong with an item, report it directly from its card.</p><div class="equip-grid">${items.map(a => `<article class="equip">
+    <div class="tag">${esc(a.assetTag)}</div><h3>${esc(a.assetType || 'Equipment')}${a.brandModel?' · '+esc(a.brandModel):''}</h3>
+    <dl><dt>Serial no.</dt><dd>${esc(a.serialNumber || '—')}</dd><dt>Condition</dt><dd><span class="badge ${cls(a.condition)}">${esc(a.condition)}</span></dd><dt>Purchased</dt><dd>${esc(a.purchaseDate || '—')}</dd><dt>Open complaints</dt><dd>${a.openTickets ? '<strong>'+esc(a.openTickets)+'</strong>' : '0'}</dd></dl>
+    <div class="actions"><button class="primary small" data-act="reportFault" data-id="${esc(a.assetTag)}">Report a fault</button>${a.openTickets ? `<button class="light small" data-act="viewAssetTickets" data-id="${esc(a.assetTag)}">View complaints</button>` : ''}</div></article>`).join('')}</div>`;
+}
+function reportFault(tag){
+  const a = initial.assets.find(x => x.assetTag === tag);
+  prefill = {asset: tag, category: 'Hardware', title: a ? (a.assetType + ' ' + a.brandModel).trim() + ' — ' : ''};
+  renderPage('new');
+  $('fDescription').focus();
+}
+function viewAssetTickets(tag){ ticketFilter = tag; renderPage('tickets'); }
+
+/* ---------- Asset register (IT Support) ---------- */
+function renderAssets(){
+  const rows = initial.assets;
+  $('content').innerHTML = `<section class="panel"><div class="panel-head"><h2>Company asset register</h2><div class="toolbar"><input id="assetSearch" placeholder="Search assets..." oninput="filterAssets()"><select id="assetCondFilter" onchange="filterAssets()"><option value="">All conditions</option>${CONDITIONS.map(x=>`<option>${x}</option>`).join('')}</select><button class="primary" data-act="addAsset">+ Add asset</button></div></div><div id="assetTable"></div></section>`;
+  filterAssets();
+}
+function filterAssets(){
+  const q = $('assetSearch').value.toLowerCase(), c = $('assetCondFilter').value;
+  const rows = initial.assets.filter(a => (!c || a.condition === c) && [a.assetTag,a.assetType,a.brandModel,a.serialNumber,a.assignedToEmail,a.department].join(' ').toLowerCase().includes(q));
+  $('assetTable').innerHTML = !initial.assets.length ? '<div class="empty">No assets registered. Add your first company asset.</div>'
+    : !rows.length ? '<div class="empty">No assets match your search.</div>'
+    : `<div class="table-wrap"><table><thead><tr><th>Asset tag</th><th>Equipment</th><th>Model</th><th>Serial</th><th>Assigned to</th><th>Department</th><th>Condition</th><th>Open tickets</th><th></th></tr></thead><tbody>${rows.map(a => `<tr><td><strong>${esc(a.assetTag)}</strong></td><td>${esc(a.assetType)}</td><td>${esc(a.brandModel)}</td><td>${esc(a.serialNumber)}</td><td>${esc(a.assignedToEmail || 'Unassigned')}</td><td>${esc(a.department)}</td><td><span class="badge ${cls(a.condition)}">${esc(a.condition)}</span></td><td>${esc(a.openTickets)}</td><td><button class="light small" data-act="editAsset" data-id="${esc(a.assetTag)}">Edit</button></td></tr>`).join('')}</tbody></table></div>`;
+}
+function assetModal(tag){
+  const a = tag ? initial.assets.find(x => x.assetTag === tag) : null;
+  const v = k => esc(a ? a[k] : '');
+  const depts = initial.departments.slice(); if (a && a.department && depts.indexOf(a.department) < 0) depts.push(a.department);
+  showModal(`<div class="modal-head"><h2>${a?'Edit asset':'Register an asset'}</h2><button class="close" data-act="closeModal" aria-label="Close">✕</button></div><div id="modalNotice"></div><div class="form-grid"><div><label for="aTag">Asset tag *</label><input id="aTag" placeholder="LAP-001" value="${v('assetTag')}" ${a?'disabled':''}></div><div><label for="aType">Equipment type</label><input id="aType" placeholder="Laptop" value="${v('assetType')}"></div><div><label for="aModel">Brand / model</label><input id="aModel" value="${v('brandModel')}"></div><div><label for="aSerial">Serial number</label><input id="aSerial" value="${v('serialNumber')}"></div><div><label for="aEmail">Assigned employee email</label><input id="aEmail" type="email" placeholder="employee@company.com" value="${v('assignedToEmail')}"></div><div><label for="aDept">Department</label><select id="aDept"><option value="">—</option>${depts.map(d=>`<option ${a&&a.department===d?'selected':''}>${esc(d)}</option>`).join('')}</select></div><div><label for="aCondition">Condition</label><select id="aCondition">${CONDITIONS.map(x=>`<option ${a&&a.condition===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label for="aDate">Purchase date</label><input id="aDate" type="date" value="${v('purchaseDate')}"></div><div class="full"><label for="aNotes">Notes (internal — not shown to employees)</label><textarea id="aNotes">${v('notes')}</textarea></div></div><div class="form-actions"><button class="primary" data-act="saveAsset" data-id="${esc(tag||'')}">Save asset</button></div>`);
+}
+function saveAsset(btn, tag){
+  return busy(btn, async () => {
+    try {
+      await call('saveAsset', token, {assetTag: tag || $('aTag').value, assetType:$('aType').value, brandModel:$('aModel').value, serialNumber:$('aSerial').value, assignedToEmail:$('aEmail').value, department:$('aDept').value, condition:$('aCondition').value, purchaseDate:$('aDate').value, notes:$('aNotes').value});
+      await refreshData(); renderAssets(); closeModal();
+    } catch (e) { $('modalNotice').innerHTML = `<div class="notice error">${esc(e.message)}</div>`; }
+  });
+}
+
+/* ---------- modal & event delegation ---------- */
+function showModal(html){ $('modalRoot').innerHTML = `<div class="modal-backdrop" data-act="backdrop"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`; }
+function closeModal(){ $('modalRoot').innerHTML = ''; }
+// Buttons built from server data carry data-act / data-id instead of inline onclick strings,
+// so a quote or bracket in a ticket id, asset tag or name can never break out into script.
+const ACTIONS = {
+  nav: (b,id) => { ticketFilter = ''; navigate(id); },
+  refresh: b => busy(b, () => navigate(activePage)),
+  openTicket: (b,id) => openTicket(id),
+  closeModal: () => closeModal(),
+  submitTicket: b => submitTicket(b),
+  saveTicketUpdate: (b,id) => saveTicketUpdate(b,id),
+  sendEmployeeUpdate: (b,id) => sendEmployeeUpdate(b,id),
+  reportFault: (b,id) => reportFault(id),
+  viewAssetTickets: (b,id) => viewAssetTickets(id),
+  addAsset: () => assetModal(''),
+  editAsset: (b,id) => assetModal(id),
+  saveAsset: (b,id) => saveAsset(b,id)
+};
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]'); if (!el) return;
+  if (el.dataset.act === 'backdrop') { if (e.target === el) closeModal(); return; }
+  const fn = ACTIONS[el.dataset.act]; if (fn) fn(el, el.dataset.id);
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+    if (['loginEmail','loginPassword'].includes(e.target.id)) doLogin();
+    if (['regName','regEmail','regPassword'].includes(e.target.id)) doRegister();
+  }
+});
+if (token) enterApp();
+</script>
+</body>
+</html>
